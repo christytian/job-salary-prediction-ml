@@ -70,6 +70,43 @@ This project builds a salary prediction model using job posting data. The pipeli
   - 768 embedding features
 - **Target**: `salary_normalized` (median annual salary)
 
+## Data Files
+
+**Important**: CSV data files are NOT included in this repository due to GitHub's 100MB file size limit.
+
+### Download Data Files
+
+All required CSV files are available on Google Drive:
+
+**[Download Data Files from Google Drive](https://drive.google.com/drive/folders/14sjOhlRJ2H5N1anGQhx08MhOT3dIsp5e?usp=share_link)**
+
+### Required Files by Step
+
+After downloading, place the CSV files in the project root directory:
+
+- **Step 0**: Requires `salary_data_cleaned.csv` (195MB)
+  - Generates: `salary_data_final.csv` (181MB)
+
+- **Step 1**: Requires `salary_data_final.csv`
+  - Analysis only, no output file
+
+- **Step 2**: Requires `salary_data_final.csv`
+  - Generates: `salary_data_no_missing.csv` (181MB)
+
+- **Step 3**: Requires `salary_data_no_missing.csv`
+  - Generates: `salary_data_with_nlp_features.csv` (487MB)
+
+### File Descriptions
+
+| File | Size | Description |
+|------|------|-------------|
+| `salary_data_cleaned.csv` | 195MB | Initial cleaned dataset (input for pipeline) |
+| `salary_data_final.csv` | 181MB | Normalized salary + essential features only |
+| `salary_data_no_missing.csv` | 181MB | Missing values handled + missingness indicators |
+| `salary_data_with_nlp_features.csv` | 487MB | **Final dataset** with 1,004 features ready for ML |
+
+**Note**: You can download just `salary_data_cleaned.csv` and regenerate all other files by running the pipeline scripts in order.
+
 ## Requirements
 
 ```bash
