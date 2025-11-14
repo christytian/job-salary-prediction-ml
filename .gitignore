@@ -1,0 +1,38 @@
+# Large Data Files (too big for GitHub)
+*.csv
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+*.ipynb
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Model files (if you download pre-trained models)
+*.bin
+*.pt
+*.pth
+*.h5
+
+# Output files
+*.log
+*.out
