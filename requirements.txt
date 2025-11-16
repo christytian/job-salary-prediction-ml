@@ -1,0 +1,71 @@
+# =============================================================================
+# Salary Prediction with NLP Feature Engineering - Requirements
+# =============================================================================
+# 
+# Installation:
+#   pip install -r requirements.txt
+# 
+# Python Version: Python 3.8+ (tested with Python 3.10+)
+# 
+# =============================================================================
+# Core Dependencies (Required for all steps)
+# =============================================================================
+
+# Numerical computing library
+numpy>=1.21.0,<3.0.0
+
+# Machine learning library
+# - Used for: TF-IDF, feature scaling, train/test split, Linear Regression,
+#   Ridge, Lasso, Random Forest, cross-validation, metrics
+scikit-learn>=1.0.0,<2.0.0
+
+# Sentence transformers for generating embeddings (Step 3: NLP features)
+# Note: This will automatically install transformers, torch, etc. as dependencies
+# - Used for: Generating semantic embeddings from job titles and descriptions
+sentence-transformers>=2.2.0,<3.0.0
+
+# =============================================================================
+# Optional Dependencies (For Step 6: Advanced Models)
+# =============================================================================
+
+# XGBoost for gradient boosting models (Step 6)
+# - CPU version (default, fast enough for this dataset)
+# - If you want GPU acceleration, install xgboost[gpu] instead (requires CUDA)
+#   See installation notes below
+xgboost>=2.0.0,<3.0.0
+
+# Progress bar library (optional, for better training progress display)
+# - Makes training progress more visible during long operations
+# - Falls back to simple progress display if not installed
+tqdm>=4.60.0,<5.0.0
+
+# =============================================================================
+# Installation Instructions
+# =============================================================================
+#
+# Basic Installation (CPU only, recommended):
+#   1. pip install -r requirements.txt
+#
+# GPU Support (Optional - for XGBoost acceleration):
+#   1. Make sure NVIDIA GPU drivers and CUDA are installed
+#   2. Replace xgboost line above with: xgboost[gpu]>=2.0.0,<3.0.0
+#      OR install separately: pip install xgboost[gpu]
+#
+# Virtual Environment (Recommended):
+#   python -m venv venv
+#   venv\Scripts\activate        # Windows
+#   source venv/bin/activate     # Linux/Mac
+#   pip install -r requirements.txt
+#
+# Verify Installation:
+#   python check_gpu.py
+#
+# =============================================================================
+# Package Usage by Step
+# =============================================================================
+# Step 0-2: csv (built-in), collections (built-in)
+# Step 3:   sklearn (TF-IDF), sentence-transformers (embeddings)
+# Step 4:   sklearn (preprocessing), numpy
+# Step 5:   sklearn (Linear/Ridge/Lasso), numpy
+# Step 6:   sklearn (Random Forest), xgboost (optional), numpy
+
