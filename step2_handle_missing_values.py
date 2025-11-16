@@ -40,7 +40,7 @@ def main():
         data = list(reader)
         all_fields = list(reader.fieldnames)
 
-    print(f"✓ Loaded: {len(data):,} records, {len(all_fields)} features")
+    print(f" Loaded: {len(data):,} records, {len(all_fields)} features")
 
     # =========================================================================
     # STEP 2.0: Analyze Missing Value Tiers
@@ -70,7 +70,7 @@ def main():
         else:
             tier_3_impute.append(col)
 
-    print(f"\n📊 Missing Value Tier Breakdown:")
+    print(f"\n Missing Value Tier Breakdown:")
     print(f"   Tier 1 (≥90% missing - DROP):              {len(tier_1_drop)} features")
     print(f"   Tier 2 (30-90% missing - IMPUTE+INDICATOR): {len(tier_2_indicator)} features")
     print(f"   Tier 3 (<30% missing - IMPUTE ONLY):        {len(tier_3_impute)} features")
@@ -99,19 +99,19 @@ def main():
     for f in tier_1_drop:
         if f in all_fields:
             pct = missing_analysis.get(f, {}).get('pct', 0)
-            print(f"      ❌ {f:<30} ({pct:.1f}% missing)")
+            print(f"       {f:<30} ({pct:.1f}% missing)")
 
     if redundant_features:
         print("\n   Redundant salary columns:")
         for f in redundant_features:
             if f in all_fields:
-                print(f"      ❌ {f:<30} (redundant with salary_normalized)")
+                print(f"       {f:<30} (redundant with salary_normalized)")
 
     # Keep only features not in drop list
     features_to_keep = [f for f in all_fields if f not in features_to_drop]
 
-    print(f"\n✓ Kept: {len(features_to_keep)} features")
-    print(f"✓ Dropped: {len(features_to_drop)} features")
+    print(f"\n Kept: {len(features_to_keep)} features")
+    print(f" Dropped: {len(features_to_drop)} features")
 
     # =========================================================================
     # STEP 2.2: Create Missingness Indicators for Tier 2 Features
@@ -143,9 +143,9 @@ def main():
 
             indicator_counts[col] = missing_count
             pct = missing_count / len(data) * 100
-            print(f"   ✓ {indicator_col:<35} (captures {missing_count:,} missing values, {pct:.1f}%)")
+            print(f"    {indicator_col:<35} (captures {missing_count:,} missing values, {pct:.1f}%)")
 
-        print(f"\n✓ Created {len(indicator_columns)} new missingness indicator columns")
+        print(f"\n Created {len(indicator_columns)} new missingness indicator columns")
     else:
         print("\n   No Tier 2 features to process (all were dropped or no missing values in 30-90% range)")
 
@@ -176,14 +176,14 @@ def main():
     categorical_to_impute = [col for col in categorical_features if col in features_with_missing]
 
     if categorical_to_impute:
-        print("\n📊 Categorical Features (impute with mode):")
+        print("\n Categorical Features (impute with mode):")
         for col in categorical_to_impute:
             values = [row[col] for row in data if row.get(col) and row[col] != '']
             if values:
                 mode_val = get_mode(values)
                 imputation_values[col] = mode_val
                 tier = "Tier 2" if col in tier_2_to_process else "Tier 3"
-                print(f"   • {col:<30} → '{mode_val}' ({tier})")
+                print(f"   • {col:<30}  '{mode_val}' ({tier})")
 
     # Numerical features - use median
     numerical_features = [
@@ -201,7 +201,7 @@ def main():
     numerical_to_impute = [col for col in numerical_features if col in features_with_missing]
 
     if numerical_to_impute:
-        print("\n🔢 Numerical Features (impute with median):")
+        print("\n Numerical Features (impute with median):")
         for col in numerical_to_impute:
             values = []
             for row in data:
@@ -214,7 +214,7 @@ def main():
                 median_val = get_median(values)
                 imputation_values[col] = median_val
                 tier = "Tier 2" if col in tier_2_to_process else "Tier 3"
-                print(f"   • {col:<30} → {median_val:.0f} ({tier})")
+                print(f"   • {col:<30}  {median_val:.0f} ({tier})")
 
     # Text features - use 'Unknown' or ''
     text_features = [
@@ -235,11 +235,11 @@ def main():
     text_to_impute = [col for col in text_features if col in features_with_missing]
 
     if text_to_impute:
-        print("\n📝 Text Features (impute with 'Unknown'):")
+        print("\n Text Features (impute with 'Unknown'):")
         for col in text_to_impute:
             imputation_values[col] = 'Unknown'
             tier = "Tier 2" if col in tier_2_to_process else "Tier 3"
-            print(f"   • {col:<30} → 'Unknown' ({tier})")
+            print(f"   • {col:<30}  'Unknown' ({tier})")
 
     # =========================================================================
     # STEP 2.4: Apply Imputation
@@ -286,7 +286,7 @@ def main():
         writer.writeheader()
         writer.writerows(data)
 
-    print(f"\n✓ Saved: {output_file}")
+    print(f"\n Saved: {output_file}")
 
     # =========================================================================
     # SUMMARY
@@ -302,25 +302,25 @@ def main():
         if missing_count > 0:
             remaining_missing[col] = missing_count
 
-    print(f"\n📊 SUMMARY:")
+    print(f"\n SUMMARY:")
     print(f"   Input:  salary_data_final.csv ({len(data):,} records, {len(all_fields)} features)")
     print(f"   Output: {output_file} ({len(data):,} records, {len(final_fieldnames)} features)")
     print(f"")
     print(f"   Tier 1 (Dropped):               {len(features_to_drop)} features")
-    print(f"   Tier 2 (Imputed+Indicator):     {len(tier_2_to_process)} features → +{len(indicator_columns)} indicators")
+    print(f"   Tier 2 (Imputed+Indicator):     {len(tier_2_to_process)} features  +{len(indicator_columns)} indicators")
     print(f"   Tier 3 (Imputed only):          {len([c for c in tier_3_impute if c in features_to_keep])} features")
     print(f"   Total values imputed:           {sum(imputation_counts.values()):,}")
 
     if remaining_missing:
-        print(f"\n⚠️  Features still with missing values:")
+        print(f"\n  Features still with missing values:")
         for col, count in sorted(remaining_missing.items(), key=lambda x: x[1], reverse=True)[:5]:
             pct = count / len(data) * 100
             print(f"   • {col:<30} {count:>6,} ({pct:>5.1f}%)")
     else:
-        print(f"\n✅ NO MISSING VALUES! Dataset is complete.")
+        print(f"\n NO MISSING VALUES! Dataset is complete.")
 
     if indicator_columns:
-        print(f"\n🎯 NEW MISSINGNESS INDICATOR FEATURES ({len(indicator_columns)}):")
+        print(f"\n NEW MISSINGNESS INDICATOR FEATURES ({len(indicator_columns)}):")
         print("   (Binary columns that preserve the signal that a value was missing)")
         for ind_col in indicator_columns:
             original_col = ind_col.replace('_missing', '')
@@ -328,7 +328,7 @@ def main():
             pct = count / len(data) * 100
             print(f"   • {ind_col:<35} ({count:,} = 1, {pct:.1f}%)")
 
-    print(f"\n📋 FEATURE BREAKDOWN ({len(final_fieldnames)} total):")
+    print(f"\n FEATURE BREAKDOWN ({len(final_fieldnames)} total):")
 
     feature_categories = {
         'Target': ['salary_normalized'],
@@ -352,10 +352,10 @@ def main():
     print("WHY THIS APPROACH WORKS:")
     print("=" * 80)
     print("""
-✓ Linear Regression: Can use imputed values + learn to weight them via indicators
-✓ Random Forest/XGBoost: Can split on missingness indicators for better predictions
-✓ Preserves Signal: Missingness itself can be predictive (MNAR patterns)
-✓ Example: If 'applies_missing=1' correlates with higher salaries for senior roles,
+ Linear Regression: Can use imputed values + learn to weight them via indicators
+ Random Forest/XGBoost: Can split on missingness indicators for better predictions
+ Preserves Signal: Missingness itself can be predictive (MNAR patterns)
+ Example: If 'applies_missing=1' correlates with higher salaries for senior roles,
            models can learn this pattern!
     """)
 

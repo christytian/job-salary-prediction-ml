@@ -7,14 +7,14 @@ This script extracts numerical features from text using TWO complementary approa
 1. TF-IDF (Term Frequency-Inverse Document Frequency)
    - Keyword-based approach
    - Creates one feature per important word
-   - Example: "python" → python_tfidf = 0.85
+   - Example: "python"  python_tfidf = 0.85
    - Pro: Interpretable (you know which words matter)
    - Con: Treats words independently (doesn't understand "Senior Engineer" ≈ "Lead Developer")
 
 2. Sentence Embeddings (Semantic Vectors)
    - Meaning-based approach using deep learning
    - Creates dense vector (384 dimensions) for entire sentence
-   - Example: "Senior ML Engineer" → [0.23, -0.15, 0.89, ..., 0.45]
+   - Example: "Senior ML Engineer"  [0.23, -0.15, 0.89, ..., 0.45]
    - Pro: Understands semantic similarity
    - Con: Less interpretable (hard to explain individual dimensions)
 
@@ -70,7 +70,7 @@ def clean_text(text):
     Clean and normalize text for NLP processing.
 
     Steps:
-    1. Convert to lowercase ("Senior" → "senior")
+    1. Convert to lowercase ("Senior"  "senior")
     2. Handle special programming terms (C++, C#, .NET)
     3. Remove URLs and emails
     4. Remove extra whitespace
@@ -109,7 +109,7 @@ def clean_text(text):
     # This removes: @#$%^&*()[]{}|\ but keeps: a-z, 0-9, spaces
     text = re.sub(r'[^a-z0-9\s]', ' ', text)
 
-    # Step 6: Remove extra whitespace (multiple spaces → single space)
+    # Step 6: Remove extra whitespace (multiple spaces  single space)
     text = re.sub(r'\s+', ' ', text).strip()
 
     return text
@@ -147,11 +147,11 @@ def main():
     print("""
     This script creates numerical features from text using:
 
-    📊 TF-IDF (Keyword-based):
+     TF-IDF (Keyword-based):
        - Identifies important words based on frequency
        - Creates interpretable features you can analyze
 
-    🧠 Embeddings (Meaning-based):
+     Embeddings (Meaning-based):
        - Uses deep learning to understand semantic similarity
        - Captures that "Senior ML Engineer" ≈ "Lead Data Scientist"
 
@@ -171,8 +171,8 @@ def main():
         data = list(reader)
         original_fields = list(reader.fieldnames)
 
-    print(f"✓ Loaded: {len(data):,} records")
-    print(f"✓ Original features: {len(original_fields)}")
+    print(f" Loaded: {len(data):,} records")
+    print(f" Original features: {len(original_fields)}")
 
     # Identify text columns we'll process
     text_columns = {
@@ -181,7 +181,7 @@ def main():
         'all_skills': 'Required skills (e.g., "Python, AWS, Docker")'
     }
 
-    print(f"\n📝 Text columns to process:")
+    print(f"\n Text columns to process:")
     for col, desc in text_columns.items():
         if col in original_fields:
             print(f"   • {col:<15} - {desc}")
@@ -195,9 +195,9 @@ def main():
 
     print("""
     Preprocessing cleans text before feature extraction:
-    - Lowercase: "Senior" → "senior" (treats them as same word)
+    - Lowercase: "Senior"  "senior" (treats them as same word)
     - Remove URLs, emails (not useful for salary prediction)
-    - Handle special terms: "C++" → "cplusplus" (preserve meaning)
+    - Handle special terms: "C++"  "cplusplus" (preserve meaning)
     - Remove punctuation, extra spaces
 
     WHY? Clean text = better features = more accurate predictions!
@@ -224,7 +224,7 @@ def main():
                     print(f"         Cleaned:  {cleaned_text[:80]}...")
 
     elapsed = time.time() - start_time
-    print(f"\n✓ Preprocessing complete in {elapsed:.2f} seconds")
+    print(f"\n Preprocessing complete in {elapsed:.2f} seconds")
 
     # =========================================================================
     # STEP 3.2: Extract TF-IDF Features
@@ -238,17 +238,17 @@ def main():
 
     WHAT IT DOES:
     -------------
-    Converts text → numerical scores for important words
+    Converts text  numerical scores for important words
 
     HOW IT WORKS:
     -------------
     1. TF (Term Frequency): How often does word appear in THIS job?
-       - "python" appears 3 times in description → high TF
+       - "python" appears 3 times in description  high TF
 
     2. IDF (Inverse Document Frequency): How rare is word across ALL jobs?
-       - "python" appears in 40% of jobs → medium IDF
-       - "kubernetes" appears in 5% of jobs → high IDF (rare = valuable!)
-       - "the" appears in 100% of jobs → low IDF (common = useless)
+       - "python" appears in 40% of jobs  medium IDF
+       - "kubernetes" appears in 5% of jobs  high IDF (rare = valuable!)
+       - "the" appears in 100% of jobs  low IDF (common = useless)
 
     3. TF-IDF = TF × IDF
        - High score: word is frequent in THIS job AND rare overall
@@ -270,9 +270,9 @@ def main():
     print("\nChecking if scikit-learn is installed...")
     try:
         from sklearn.feature_extraction.text import TfidfVectorizer
-        print("✓ scikit-learn is available")
+        print(" scikit-learn is available")
     except ImportError:
-        print("❌ ERROR: scikit-learn not installed!")
+        print(" ERROR: scikit-learn not installed!")
         print("\n   Please install it:")
         print("   pip install scikit-learn")
         print("\n   Exiting...")
@@ -286,7 +286,7 @@ def main():
     # 3.2.1: TF-IDF from TITLE
     # -------------------------------------------------------------------------
     if CONFIG['use_title_tfidf']:
-        print(f"\n📊 Extracting TF-IDF from TITLE (top {CONFIG['title_tfidf_max_features']} keywords)...")
+        print(f"\n Extracting TF-IDF from TITLE (top {CONFIG['title_tfidf_max_features']} keywords)...")
 
         # Collect all cleaned titles
         titles_cleaned = [row['title_cleaned'] for row in data]
@@ -316,7 +316,7 @@ def main():
         # Fit and transform (learn vocabulary + compute scores)
         # This is where the magic happens!
         # - Fit: Learn which words are important across ALL titles
-        # - Transform: Convert each title → vector of TF-IDF scores
+        # - Transform: Convert each title  vector of TF-IDF scores
         start_time = time.time()
         title_tfidf_matrix = vectorizer_title.fit_transform(titles_cleaned)
         elapsed = time.time() - start_time
@@ -324,12 +324,12 @@ def main():
         # Get feature names (the actual words/phrases selected)
         title_tfidf_features = vectorizer_title.get_feature_names_out()
 
-        print(f"\n   ✓ Extracted {len(title_tfidf_features)} TF-IDF features from titles in {elapsed:.2f}s")
+        print(f"\n    Extracted {len(title_tfidf_features)} TF-IDF features from titles in {elapsed:.2f}s")
         print(f"\n   Top 10 most important title keywords:")
         for i, word in enumerate(title_tfidf_features[:10]):
             print(f"      {i+1:2}. title_tfidf_{word}")
 
-        # Convert sparse matrix → add to our data rows
+        # Convert sparse matrix  add to our data rows
         # (Sparse matrix is efficient for storage, but we need to add to CSV rows)
         for i, row in enumerate(data):
             tfidf_scores = title_tfidf_matrix[i].toarray()[0]  # Get scores for this row
@@ -348,7 +348,7 @@ def main():
     # 3.2.2: TF-IDF from DESCRIPTION
     # -------------------------------------------------------------------------
     if CONFIG['use_desc_tfidf']:
-        print(f"\n📝 Extracting TF-IDF from DESCRIPTION (top {CONFIG['desc_tfidf_max_features']} keywords)...")
+        print(f"\n Extracting TF-IDF from DESCRIPTION (top {CONFIG['desc_tfidf_max_features']} keywords)...")
 
         # Collect all cleaned descriptions
         descriptions_cleaned = [row['description_cleaned'] for row in data]
@@ -367,7 +367,7 @@ def main():
 
         desc_tfidf_features = vectorizer_desc.get_feature_names_out()
 
-        print(f"\n   ✓ Extracted {len(desc_tfidf_features)} TF-IDF features from descriptions in {elapsed:.2f}s")
+        print(f"\n    Extracted {len(desc_tfidf_features)} TF-IDF features from descriptions in {elapsed:.2f}s")
         print(f"\n   Top 10 most important description keywords:")
         for i, word in enumerate(desc_tfidf_features[:10]):
             print(f"      {i+1:2}. desc_tfidf_{word}")
@@ -389,7 +389,7 @@ def main():
     # 3.2.3: TF-IDF from SKILLS
     # -------------------------------------------------------------------------
     if CONFIG['use_skills_tfidf']:
-        print(f"\n🛠️  Extracting TF-IDF from SKILLS (top {CONFIG['skills_tfidf_max_features']} keywords)...")
+        print(f"\n  Extracting TF-IDF from SKILLS (top {CONFIG['skills_tfidf_max_features']} keywords)...")
 
         skills_cleaned = [row['all_skills_cleaned'] for row in data]
 
@@ -407,7 +407,7 @@ def main():
 
         skills_tfidf_features = vectorizer_skills.get_feature_names_out()
 
-        print(f"\n   ✓ Extracted {len(skills_tfidf_features)} TF-IDF features from skills in {elapsed:.2f}s")
+        print(f"\n    Extracted {len(skills_tfidf_features)} TF-IDF features from skills in {elapsed:.2f}s")
         print(f"\n   Top 10 most valuable skills:")
         for i, word in enumerate(skills_tfidf_features[:10]):
             print(f"      {i+1:2}. skills_tfidf_{word}")
@@ -445,16 +445,16 @@ def main():
     print("""
     WHAT ARE SENTENCE EMBEDDINGS?
     ----------------------------
-    Deep learning models that convert text → dense numerical vectors (384 numbers)
+    Deep learning models that convert text  dense numerical vectors (384 numbers)
 
     HOW THEY WORK:
     -------------
     • Pre-trained on millions of sentences to understand meaning
-    • Similar meanings → similar vectors (even with different words!)
+    • Similar meanings  similar vectors (even with different words!)
     • Example:
-        "Senior ML Engineer"     → [0.23, -0.45, 0.67, ..., 0.12] (384 numbers)
-        "Lead Data Scientist"    → [0.21, -0.43, 0.69, ..., 0.15] (very similar!)
-        "Junior Marketing Coord" → [-0.56, 0.89, -0.12, ..., 0.45] (very different!)
+        "Senior ML Engineer"      [0.23, -0.45, 0.67, ..., 0.12] (384 numbers)
+        "Lead Data Scientist"     [0.21, -0.43, 0.69, ..., 0.15] (very similar!)
+        "Junior Marketing Coord"  [-0.56, 0.89, -0.12, ..., 0.45] (very different!)
 
     WHY ADD EMBEDDINGS ON TOP OF TF-IDF?
     ------------------------------------
@@ -476,9 +476,9 @@ def main():
     print("\nChecking if sentence-transformers is installed...")
     try:
         from sentence_transformers import SentenceTransformer
-        print("✓ sentence-transformers is available")
+        print(" sentence-transformers is available")
     except ImportError:
-        print("❌ ERROR: sentence-transformers not installed!")
+        print(" ERROR: sentence-transformers not installed!")
         print("\n   Please install it:")
         print("   pip install sentence-transformers")
         print("\n   Continuing without embeddings (TF-IDF only)...")
@@ -489,19 +489,19 @@ def main():
 
     # Only proceed if embeddings are enabled AND library is available
     if CONFIG['use_title_embeddings'] or CONFIG['use_desc_embeddings']:
-        print("\n🧠 Loading sentence embedding model: all-MiniLM-L6-v2")
+        print("\n Loading sentence embedding model: all-MiniLM-L6-v2")
         print("   (This may take a minute on first run - downloads ~80MB model)")
 
         start_time = time.time()
         model = SentenceTransformer('all-MiniLM-L6-v2')
         elapsed = time.time() - start_time
-        print(f"   ✓ Model loaded in {elapsed:.2f}s")
+        print(f"    Model loaded in {elapsed:.2f}s")
 
         # -------------------------------------------------------------------------
         # 3.3.1: Embeddings from TITLE
         # -------------------------------------------------------------------------
         if CONFIG['use_title_embeddings']:
-            print(f"\n📊 Generating embeddings for TITLES...")
+            print(f"\n Generating embeddings for TITLES...")
             print(f"   Processing {len(data):,} job titles...")
 
             # Collect cleaned titles
@@ -512,9 +512,9 @@ def main():
             title_embeddings = model.encode(titles_for_embedding, show_progress_bar=True, batch_size=256)
             elapsed = time.time() - start_time
 
-            print(f"\n   ✓ Generated {title_embeddings.shape[0]:,} title embeddings in {elapsed:.2f}s")
-            print(f"   ✓ Each embedding: {title_embeddings.shape[1]} dimensions")
-            print(f"   ✓ Speed: {len(data)/elapsed:.0f} titles/second")
+            print(f"\n    Generated {title_embeddings.shape[0]:,} title embeddings in {elapsed:.2f}s")
+            print(f"    Each embedding: {title_embeddings.shape[1]} dimensions")
+            print(f"    Speed: {len(data)/elapsed:.0f} titles/second")
 
             # Add to data
             for i, row in enumerate(data):
@@ -534,7 +534,7 @@ def main():
         # 3.3.2: Embeddings from DESCRIPTION
         # -------------------------------------------------------------------------
         if CONFIG['use_desc_embeddings']:
-            print(f"\n📝 Generating embeddings for DESCRIPTIONS...")
+            print(f"\n Generating embeddings for DESCRIPTIONS...")
             print(f"   Processing {len(data):,} job descriptions...")
             print(f"   (This takes longer - descriptions are 10-100x longer than titles)")
 
@@ -552,9 +552,9 @@ def main():
             desc_embeddings = model.encode(descriptions_for_embedding, show_progress_bar=True, batch_size=64)
             elapsed = time.time() - start_time
 
-            print(f"\n   ✓ Generated {desc_embeddings.shape[0]:,} description embeddings in {elapsed:.2f}s")
-            print(f"   ✓ Each embedding: {desc_embeddings.shape[1]} dimensions")
-            print(f"   ✓ Speed: {len(data)/elapsed:.0f} descriptions/second")
+            print(f"\n    Generated {desc_embeddings.shape[0]:,} description embeddings in {elapsed:.2f}s")
+            print(f"    Each embedding: {desc_embeddings.shape[1]} dimensions")
+            print(f"    Speed: {len(data)/elapsed:.0f} descriptions/second")
 
             # Add to data
             for i, row in enumerate(data):
@@ -581,7 +581,7 @@ def main():
             print(f"      Features:    {stats['num_features']}")
 
     else:
-        print("\n⚠️  Embeddings DISABLED in CONFIG")
+        print("\n  Embeddings DISABLED in CONFIG")
         print("   Running with TF-IDF features only")
 
     # =========================================================================
@@ -629,7 +629,7 @@ def main():
         writer.writerows(data)
 
     elapsed = time.time() - start_time
-    print(f"   ✓ Saved in {elapsed:.2f} seconds")
+    print(f"    Saved in {elapsed:.2f} seconds")
 
     # =========================================================================
     # STEP 3.5: FEATURE ANALYSIS & SUMMARY
@@ -638,12 +638,12 @@ def main():
     print("STEP 3.5: FEATURE ANALYSIS & SUMMARY")
     print("=" * 80)
 
-    print(f"\n📊 FINAL DATASET SUMMARY:")
+    print(f"\n FINAL DATASET SUMMARY:")
     print(f"   Input:  salary_data_no_missing.csv ({len(data):,} records, {len(original_fields)} features)")
     print(f"   Output: {output_file} ({len(data):,} records, {len(final_fieldnames)} features)")
     print(f"   Added:  {len(final_fieldnames) - len(original_fields)} new NLP features")
 
-    print(f"\n🔤 NLP FEATURES BREAKDOWN:")
+    print(f"\n NLP FEATURES BREAKDOWN:")
 
     # TF-IDF breakdown
     print(f"\n   TF-IDF Features ({len(all_tfidf_features)} total):")
@@ -660,7 +660,7 @@ def main():
         print(f"\n   Embedding Features: NONE (disabled in CONFIG)")
 
     # Show examples from first job posting
-    print(f"\n💡 EXAMPLE: First Job Posting TF-IDF Scores:")
+    print(f"\n EXAMPLE: First Job Posting TF-IDF Scores:")
     print(f"   Title: {data[0].get('title', '')}")
 
     # Show top 5 title TF-IDF scores for first row
@@ -679,62 +679,62 @@ def main():
     # =========================================================================
     print("\n" + "=" * 80)
     if all_embedding_features:
-        print("✅ STEP 3 COMPLETE! (HYBRID NLP: TF-IDF + EMBEDDINGS)")
+        print(" STEP 3 COMPLETE! (HYBRID NLP: TF-IDF + EMBEDDINGS)")
     else:
-        print("✅ STEP 3 COMPLETE! (TF-IDF ONLY)")
+        print(" STEP 3 COMPLETE! (TF-IDF ONLY)")
     print("=" * 80)
 
     if all_embedding_features:
         print(f"""
-📋 WHAT WE DID:
-   1. ✅ Loaded {len(data):,} job postings
-   2. ✅ Cleaned text (lowercase, special chars, etc.)
-   3. ✅ Extracted {len(all_tfidf_features)} TF-IDF keyword features
-   4. ✅ Generated {len(all_embedding_features)} sentence embedding features
-   5. ✅ Saved to {output_file}
+ WHAT WE DID:
+   1.  Loaded {len(data):,} job postings
+   2.  Cleaned text (lowercase, special chars, etc.)
+   3.  Extracted {len(all_tfidf_features)} TF-IDF keyword features
+   4.  Generated {len(all_embedding_features)} sentence embedding features
+   5.  Saved to {output_file}
 
-🎯 HYBRID NLP FEATURES:
+ HYBRID NLP FEATURES:
    • TF-IDF: {len(all_tfidf_features)} interpretable keyword features
    • Embeddings: {len(all_embedding_features)} semantic meaning features
    • Total: {len(all_tfidf_features) + len(all_embedding_features)} NLP features
 
-💡 WHY HYBRID WORKS:
+ WHY HYBRID WORKS:
    TF-IDF captures explicit keywords ("python", "senior", "machine learning")
    Embeddings capture semantic similarity (knows "ML Engineer" ≈ "Data Scientist")
    Together: Maximum accuracy + some interpretability
 
-📊 DATASET READY FOR:
+ DATASET READY FOR:
    • Advanced modeling (Random Forest, XGBoost, Neural Networks)
    • High accuracy salary predictions
    • Feature importance analysis
 
-🚀 NEXT STEP:
-   → Proceed to Step 4: Train models and evaluate performance
-   → Expected improvement: Embeddings should boost R² by 5-15%
+ NEXT STEP:
+    Proceed to Step 4: Train models and evaluate performance
+    Expected improvement: Embeddings should boost R² by 5-15%
         """)
     else:
         print(f"""
-📋 WHAT WE DID:
-   1. ✅ Loaded {len(data):,} job postings
-   2. ✅ Cleaned text (lowercase, special chars, etc.)
-   3. ✅ Extracted {len(all_tfidf_features)} TF-IDF keyword features
-   4. ✅ Saved to {output_file}
+ WHAT WE DID:
+   1.  Loaded {len(data):,} job postings
+   2.  Cleaned text (lowercase, special chars, etc.)
+   3.  Extracted {len(all_tfidf_features)} TF-IDF keyword features
+   4.  Saved to {output_file}
 
-📊 DATASET READY FOR:
+ DATASET READY FOR:
    • Exploratory analysis (inspect TF-IDF scores in Excel)
    • Baseline modeling (Linear Regression with TF-IDF only)
    • Performance comparison (TF-IDF vs. Hybrid later)
 
-🚀 NEXT STEPS:
+ NEXT STEPS:
    Option A: Test TF-IDF-only model first
-            → Proceed to Step 4: Train baseline model with current features
+             Proceed to Step 4: Train baseline model with current features
 
    Option B: Add embeddings now for hybrid approach
-            → Re-enable embeddings in CONFIG (lines 43, 45)
-            → Run script again to get TF-IDF + Embeddings
-            → Compare performance
+             Re-enable embeddings in CONFIG (lines 43, 45)
+             Run script again to get TF-IDF + Embeddings
+             Compare performance
 
-💡 RECOMMENDATION: Test TF-IDF-only model first to establish baseline!
+ RECOMMENDATION: Test TF-IDF-only model first to establish baseline!
     Then add embeddings and compare performance improvement.
         """)
 

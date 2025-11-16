@@ -73,8 +73,8 @@ def main():
         data = list(reader)
         original_fields = list(reader.fieldnames)
 
-    print(f"✓ Loaded: {len(data):,} records")
-    print(f"✓ Original features: {len(original_fields)}")
+    print(f" Loaded: {len(data):,} records")
+    print(f" Original features: {len(original_fields)}")
 
     # =========================================================================
     # STEP 2: Create Normalized Salary
@@ -132,8 +132,8 @@ def main():
             invalid_count += 1
             stats['invalid'] += 1
 
-    print(f"\n✓ Successfully normalized: {normalized_count:,} records")
-    print(f"✓ Invalid/missing: {invalid_count:,} records")
+    print(f"\n Successfully normalized: {normalized_count:,} records")
+    print(f" Invalid/missing: {invalid_count:,} records")
 
     print(f"\nNormalization breakdown:")
     print(f"  • From min & max:  {stats['from_min_max']:>6,} ({stats['from_min_max']/len(data)*100:.1f}%)")
@@ -154,8 +154,8 @@ def main():
     # Filter to keep only valid records
     valid_data = [row for row in data if row.get('salary_normalized') and row['salary_normalized'] != '']
 
-    print(f"✓ Kept: {len(valid_data):,} records with valid salary_normalized")
-    print(f"✓ Removed: {len(data) - len(valid_data):,} records")
+    print(f" Kept: {len(valid_data):,} records with valid salary_normalized")
+    print(f" Removed: {len(data) - len(valid_data):,} records")
 
     # =========================================================================
     # STEP 4: Drop Non-Essential Features
@@ -184,6 +184,13 @@ def main():
         'time_recorded',
 
         # Redundant salary columns (now have salary_normalized)
+        'normalized_salary',  # DATA LEAKAGE - original normalized salary
+        'min_salary',         # Original salary range fields
+        'max_salary',
+        'med_salary',
+        'salary_yearly_min',  # Yearly salary calculations
+        'salary_yearly_max',
+        'salary_yearly_med',
         'pay_period',
         'pay_period_salary',
         'compensation_type',
@@ -226,8 +233,8 @@ def main():
         else:
             features_to_keep.append('salary_normalized')
 
-    print(f"\n✓ Kept: {len(features_to_keep)} essential features")
-    print(f"✓ Dropped: {len(features_to_drop)} non-essential features")
+    print(f"\n Kept: {len(features_to_keep)} essential features")
+    print(f" Dropped: {len(features_to_drop)} non-essential features")
 
     # =========================================================================
     # STEP 5: Save Final Dataset
@@ -244,7 +251,7 @@ def main():
         writer.writeheader()
         writer.writerows(valid_data)
 
-    print(f"✓ Saved: {output_file}")
+    print(f" Saved: {output_file}")
 
     # =========================================================================
     # SUMMARY
@@ -263,13 +270,13 @@ def main():
 
     all_salaries.sort()
 
-    print(f"\n📊 FINAL DATASET SUMMARY:")
+    print(f"\n FINAL DATASET SUMMARY:")
     print(f"   Input file:  salary_data_cleaned.csv ({len(data):,} records)")
     print(f"   Output file: {output_file} ({len(valid_data):,} records)")
-    print(f"   Features:    {len(original_fields)} → {len(features_to_keep)}")
+    print(f"   Features:    {len(original_fields)}  {len(features_to_keep)}")
     print(f"   Records removed: {len(data) - len(valid_data):,} (invalid salaries)")
 
-    print(f"\n💰 SALARY STATISTICS (salary_normalized):")
+    print(f"\n SALARY STATISTICS (salary_normalized):")
     if all_salaries:
         print(f"   Count:    {len(all_salaries):,}")
         print(f"   Min:      ${min(all_salaries):,.0f}")
@@ -279,7 +286,7 @@ def main():
         print(f"   Max:      ${max(all_salaries):,.0f}")
         print(f"   Mean:     ${sum(all_salaries)/len(all_salaries):,.0f}")
 
-    print(f"\n📋 KEY FEATURES KEPT ({len(features_to_keep)} total):")
+    print(f"\n KEY FEATURES KEPT ({len(features_to_keep)} total):")
 
     feature_categories = {
         'Target': ['salary_normalized', 'salary_yearly_min', 'salary_yearly_max', 'salary_yearly_med'],
@@ -297,7 +304,7 @@ def main():
                 print(f"     • {f}")
 
     print("\n" + "=" * 80)
-    print("✅ READY FOR MODELING!")
+    print(" READY FOR MODELING!")
     print("=" * 80)
     print(f"""
 Next steps:
