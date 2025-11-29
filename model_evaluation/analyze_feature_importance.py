@@ -105,14 +105,30 @@ def load_features(input_file: str) -> Tuple:
     # Count feature types
     tfidf_cols = [c for c in feature_cols if '_tfidf_' in c]
     w2v_cols = [c for c in feature_cols if '_w2v_' in c]
-    onehot_cols = [c for c in feature_cols if any(c.startswith(f'{feat}_') for feat in ['formatted_work_type', 'formatted_experience_level', 'company_size'])]
     frequency_cols = [c for c in feature_cols if '_frequency' in c]
     binary_cols = [c for c in feature_cols if '_binary' in c]
-    other_numeric_cols = [c for c in feature_cols if c not in tfidf_cols + w2v_cols + onehot_cols + frequency_cols + binary_cols]
+    
+    # Ordinal features (must end with _ordinal)
+    ordinal_cols = [c for c in feature_cols if c.endswith('_ordinal')]
+    
+    # One-Hot features: formatted_work_type, company_size, but NOT formatted_experience_level_ordinal
+    onehot_cols = []
+    for c in feature_cols:
+        # Skip if already classified as ordinal
+        if c in ordinal_cols:
+            continue
+        # Check if it's a one-hot encoded feature
+        if (c.startswith('formatted_work_type_') or 
+            c.startswith('company_size_') or
+            (c.startswith('formatted_experience_level_') and not c.endswith('_ordinal'))):
+            onehot_cols.append(c)
+    
+    other_numeric_cols = [c for c in feature_cols if c not in tfidf_cols + w2v_cols + onehot_cols + frequency_cols + binary_cols + ordinal_cols]
     
     print("\n📊 Feature breakdown:")
     print(f"   - TF-IDF: {len(tfidf_cols)}")
     print(f"   - Word2Vec: {len(w2v_cols)}")
+    print(f"   - Ordinal: {len(ordinal_cols)}")
     print(f"   - One-Hot: {len(onehot_cols)}")
     print(f"   - Frequency: {len(frequency_cols)}")
     print(f"   - Binary: {len(binary_cols)}")
@@ -175,12 +191,14 @@ def load_features(input_file: str) -> Tuple:
         'total_features': len(feature_cols),
         'tfidf_count': len(tfidf_cols),
         'w2v_count': len(w2v_cols),
+        'ordinal_count': len(ordinal_cols),
         'onehot_count': len(onehot_cols),
         'frequency_count': len(frequency_cols),
         'binary_count': len(binary_cols),
         'other_numeric_count': len(other_numeric_cols),
         'tfidf_cols': tfidf_cols,
         'w2v_cols': w2v_cols,
+        'ordinal_cols': ordinal_cols,
         'onehot_cols': onehot_cols,
         'frequency_cols': frequency_cols,
         'binary_cols': binary_cols,
@@ -200,6 +218,8 @@ def classify_feature_type(feature_name: str, feature_info: Dict) -> str:
         return 'TF-IDF'
     elif feature_name in feature_info['w2v_cols']:
         return 'Word2Vec'
+    elif feature_name in feature_info['ordinal_cols']:
+        return 'Ordinal'
     elif feature_name in feature_info['onehot_cols']:
         return 'One-Hot'
     elif feature_name in feature_info['frequency_cols']:
@@ -508,6 +528,7 @@ def plot_top_features_by_model(all_results: List[Dict], feature_info: Dict,
     type_colors = {
         'TF-IDF': '#1f77b4',
         'Word2Vec': '#ff7f0e',
+        'Ordinal': '#17becf',
         'One-Hot': '#2ca02c',
         'Frequency': '#d62728',
         'Binary': '#9467bd',
@@ -665,6 +686,7 @@ def plot_aggregated_top_features(analysis_result: Dict, feature_info: Dict,
     type_colors = {
         'TF-IDF': '#1f77b4',
         'Word2Vec': '#ff7f0e',
+        'Ordinal': '#17becf',
         'One-Hot': '#2ca02c',
         'Frequency': '#d62728',
         'Binary': '#9467bd',
@@ -728,6 +750,7 @@ def plot_all_models_top100(all_results: List[Dict], feature_info: Dict,
     type_colors = {
         'TF-IDF': '#1f77b4',
         'Word2Vec': '#ff7f0e',
+        'Ordinal': '#17becf',
         'One-Hot': '#2ca02c',
         'Frequency': '#d62728',
         'Binary': '#9467bd',
