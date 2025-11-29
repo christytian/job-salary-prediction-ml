@@ -1,0 +1,34 @@
+{
+  "model_type": "MLPRegressor",
+  "model_config": {
+    "hidden_layer_sizes": [
+      128,
+      64
+    ],
+    "activation": "relu",
+    "solver": "adam",
+    "alpha": 0.001,
+    "learning_rate": "adaptive",
+    "learning_rate_init": 0.001,
+    "max_iter": 500,
+    "early_stopping": true,
+    "validation_fraction": 0.1,
+    "n_iter_no_change": 20,
+    "random_state": 42
+  },
+  "training_date": "2025-11-29T12:15:27.016452",
+  "performance_metrics": {
+    "train_rmse": 24291.51979545979,
+    "test_rmse": 31623.176612003903,
+    "train_mae": 16506.979822773617,
+    "test_mae": 21285.52735033385,
+    "train_r2": 0.8078260608850442,
+    "test_r2": 0.6725324579324294,
+    "n_iter": 146,
+    "loss": "228333571.57697454"
+  },
+  "n_features": 2122,
+  "feature_columns_file": "mlp_feature_columns.json",
+  "model_file": "mlp_salary_model.joblib",
+  "scaler_file": "mlp_scaler.joblib"
+}
